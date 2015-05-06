@@ -116,7 +116,7 @@ class ScanAndScroll implements \Iterator
     {
         $this->_search->getQuery()->setSize($this->sizePerShard);
 
-        $this->_search->setOption(Search::OPTION_SEARCH_TYPE, Search::OPTION_SEARCH_TYPE_SCAN);
+//        $this->_search->setOption(Search::OPTION_SEARCH_TYPE, Search::OPTION_SEARCH_TYPE_SCAN);
         $this->_search->setOption(Search::OPTION_SCROLL, $this->expiryTime);
 
         // initial scan request
