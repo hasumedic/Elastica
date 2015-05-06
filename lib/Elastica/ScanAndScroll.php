@@ -32,7 +32,7 @@ class ScanAndScroll implements \Iterator
     /**
      * @var null|string
      */
-    protected $_nextScrollId = null;
+    public $_nextScrollId = null;
 
     /**
      * @var null|string
@@ -114,16 +114,14 @@ class ScanAndScroll implements \Iterator
      */
     public function rewind()
     {
-        $this->_search->getQuery()->setSize($this->sizePerShard);
+//        $this->_search->getQuery()->setSize($this->sizePerShard);
 
 //        $this->_search->setOption(Search::OPTION_SEARCH_TYPE, Search::OPTION_SEARCH_TYPE_SCAN);
         $this->_search->setOption(Search::OPTION_SCROLL, $this->expiryTime);
 
-        // initial scan request
-        $this->_setScrollId($this->_search->search());
-
-        // trigger first scroll request
-        $this->_scroll();
+        $resultSet = $this->_search->search();
+        $this->_currentResultSet = $resultSet;
+        $this->_setScrollId($resultSet);
     }
 
     /**
@@ -134,10 +132,11 @@ class ScanAndScroll implements \Iterator
     {
         $this->_search->setOption(Search::OPTION_SEARCH_TYPE, Search::OPTION_SEARCH_TYPE_SCROLL);
         $this->_search->setOption(Search::OPTION_SCROLL_ID, $this->_nextScrollId);
+        $this->_search->setOption(Search::OPTION_SCROLL, $this->expiryTime);
 
         $resultSet = $this->_search->search();
         $this->_currentResultSet = $resultSet;
-        $this->_setScrollId($resultSet);
+//        $this->_setScrollId($resultSet);
     }
 
     /**
